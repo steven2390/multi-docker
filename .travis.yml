@@ -1,0 +1,22 @@
+sudo: required
+services:
+  - docker
+
+before_install:
+  - docker build -t steven/react-test -f ./client/Dockerfile.dev ./client
+
+script:
+  - docker run steven/react-test npm test -- --coverage
+
+after_success:
+  - docker build -t steven/multi-client ./client
+  - docker build -t steven/multi-nginx ./nginx
+  - docker build -t steven/multi-server ./server
+  - docker build -t steven/multi-worker ./worker
+
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
+
+  - docker push steven/multi-client
+  - docker push steven/multi-nginx
+  - docker push steven/multi-server
+  - docker push steven/multi-worker
