@@ -5,7 +5,7 @@ services:
 before_install:
   - docker build -t steven/react-test -f ./client/Dockerfile.dev ./client
 
-script:
+script: 
   - docker run steven/react-test npm test -- --coverage
 
 after_success:
